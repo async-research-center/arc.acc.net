@@ -1,9 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Primary Meta Tags -->
 <title>AIC-6 Terminal — Async Research Institute</title>
+<meta name="title" content="AIC-6 Terminal — Async Research Institute">
+<meta name="description" content="AIC-6 Terminal is a retro‑styled CRT interface simulation built for Async Research Institute systems.">
+
+<!-- Mobile & Browser -->
+<meta name="theme-color" content="#000000">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arc.acc.net/">
+<meta property="og:title" content="AIC-6 Terminal — Async Research Institute">
+<meta property="og:description" content="AIC-6 Terminal is a retro‑styled CRT interface simulation built for Async Research Institute systems.">
+<meta property="og:image" content="/og-image.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://arc.acc.net/">
+<meta property="twitter:title" content="AIC-6 Terminal — Async Research Institute">
+<meta property="twitter:description" content="AIC-6 Terminal is a retro‑styled CRT interface simulation built for Async Research Institute systems.">
+<meta property="twitter:image" content="/og-image.png">
+
+<!-- Icons -->
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- Optional: PWA -->
+<link rel="manifest" href="/manifest.json">
+
 <style>
 /* ── Reset ── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -29,130 +57,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Co
 #cmd-input{flex:1;background:transparent;border:none;outline:none;color:#00ff41;font-size:14px;font-family:'Courier New',Courier,monospace;text-shadow:0 0 6px #00ff41;caret-color:#00ff41;padding:0 0 0 2px;line-height:1.5}
 
 /* ── Text Colour Classes ── */
-.bright{color:#aaffbb;text-shadow:0 0 8px #aaffbb,0 0 3px #00ff41}
-.dim{color:#00aa2a;text-shadow:0 0 4px #00aa2a}
-.err{color:#ff4444;text-shadow:0 0 6px #ff4444}
-.amb{color:#ffb000;text-shadow:0 0 6px #ffb000}
-.echo{color:#aaffbb;text-shadow:0 0 8px #aaffbb}
-
-/* ══════════════════════════════════════════════════
-   APP OVERLAY  (covers entire screen when active)
-══════════════════════════════════════════════════ */
-#app-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;font-family:'Courier New',Courier,monospace;font-size:13px}
-#app-overlay.on{display:flex;flex-direction:column}
-
-/* ── Common app child: fill overlay ── */
-.app-screen{display:none;flex:1;flex-direction:column;width:100%;height:100%;overflow:hidden}
-.app-screen.on{display:flex}
-
-/* ════════════════════════
-   NORTON COMMANDER
-════════════════════════ */
-#nc-root{background:#000080;color:#aaa;outline:none}
-.nc-topbar{background:#000080;color:#ff0;text-align:center;padding:2px 0;font-weight:bold;border-bottom:1px solid #aaa;flex-shrink:0}
-.nc-panels{display:flex;flex:1;overflow:hidden}
-.nc-panel{flex:1;display:flex;flex-direction:column;border:1px solid #aaa;margin:2px;overflow:hidden}
-.nc-panel.nc-act{border-color:#fff;color:#fff}
-.nc-panel.nc-inact{border-color:#555;color:#888}
-.nc-phdr{background:#000060;color:#ff0;padding:1px 4px;font-weight:bold;overflow:hidden;font-size:12px;flex-shrink:0}
-.nc-psubhdr{background:#000060;color:#888;padding:1px 4px;border-bottom:1px solid #555;font-size:11px;flex-shrink:0}
-.nc-filelist{flex:1;overflow:hidden}
-.nc-row{padding:0 4px;white-space:pre;overflow:hidden;line-height:1.4;font-size:12px}
-.nc-row.nc-sel{background:#0aa;color:#000}
-.nc-msg{background:#000080;color:#fff;padding:2px 6px;border-top:1px solid #aaa;font-size:12px;min-height:20px;flex-shrink:0}
-.nc-fnbar{display:flex;background:#000;color:#aaa;font-size:11px;flex-shrink:0}
-.nc-fn{flex:1;text-align:center;padding:1px 0;overflow:hidden}
-.nc-fnum{color:#000;background:#aaa;padding:0 2px;margin-right:1px}
-
-/* ════════════════════════
-   XTREE GOLD
-════════════════════════ */
-#xt-root{background:#000;color:#00ff41;text-shadow:0 0 4px #00ff41;outline:none}
-.xt-title{background:#003300;color:#00ff41;text-align:center;padding:2px;font-weight:bold;border-bottom:1px solid #005500;flex-shrink:0}
-.xt-body{display:flex;flex:1;overflow:hidden}
-.xt-tree-pane{width:38%;border-right:1px solid #003300;padding:0 4px;overflow:hidden}
-.xt-files-pane{flex:1;padding:0 4px;overflow:hidden}
-.xt-phdr{color:#5f5;font-weight:bold;padding:2px 0;font-size:12px;border-bottom:1px solid #003300}
-.xt-row{white-space:pre;overflow:hidden;font-size:12px;line-height:1.4;padding:0 2px}
-.xt-row.xt-sel{background:#003300;color:#fff;text-shadow:none}
-.xt-stats{background:#001100;color:#00aa2a;padding:2px 8px;font-size:12px;border-top:1px solid #003300;flex-shrink:0}
-.xt-fnbar{display:flex;gap:8px;background:#000;color:#5f5;padding:2px 8px;font-size:11px;flex-wrap:wrap;flex-shrink:0}
-
-/* ════════════════════════
-   WORD PROCESSORS (shared wrapper)
-════════════════════════ */
-#wp-inner{display:flex;flex:1;flex-direction:column;outline:none}
-.wp-title{padding:2px 8px;font-weight:bold;flex-shrink:0;text-align:center}
-.wp-menu{padding:1px 8px;flex-shrink:0;overflow:hidden;font-size:12px}
-.wp-ruler{padding:0 8px;flex-shrink:0;font-size:11px}
-#wp-ta{flex:1;border:none;outline:none;padding:8px 12px;font-family:'Courier New',Courier,monospace;font-size:13px;resize:none;line-height:1.6;width:100%;min-height:0}
-.wp-status{padding:2px 8px;flex-shrink:0;font-size:12px;min-height:18px}
-.wp-bottom{padding:2px 8px;flex-shrink:0;font-size:12px}
-.wp-fns{display:flex;flex-wrap:wrap;flex-shrink:0;padding:1px 2px;gap:2px}
-.wp-fn{padding:1px 4px;font-size:11px}
-/* WordPerfect (blue) */
-#wp-inner.wp-wp{background:#0000aa;color:#fff}
-#wp-inner.wp-wp .wp-title{background:#000066;color:#ff0}
-#wp-inner.wp-wp .wp-menu{background:#aaa;color:#000}
-#wp-inner.wp-wp .wp-ruler{background:#0000aa;color:#888}
-#wp-inner.wp-wp #wp-ta{background:#0000aa;color:#fff;caret-color:#fff}
-#wp-inner.wp-wp .wp-status{background:#0000aa;color:#0ff}
-#wp-inner.wp-wp .wp-bottom{background:#0000aa;color:#ff0}
-#wp-inner.wp-wp .wp-fns{background:#000}
-#wp-inner.wp-wp .wp-fn{background:#aaa;color:#000}
-/* WordStar (dark) */
-#wp-inner.wp-ws{background:#1a1a1a;color:#d0d0d0}
-#wp-inner.wp-ws .wp-title{background:#333;color:#ff0}
-#wp-inner.wp-ws .wp-menu{background:#000;color:#0f0;font-size:11px}
-#wp-inner.wp-ws .wp-ruler{background:#1a1a1a;color:#555}
-#wp-inner.wp-ws #wp-ta{background:#111;color:#d0d0d0;caret-color:#d0d0d0}
-#wp-inner.wp-ws .wp-status{background:#000;color:#0f0}
-#wp-inner.wp-ws .wp-bottom{background:#333;color:#fff}
-#wp-inner.wp-ws .wp-fns{background:#000}
-#wp-inner.wp-ws .wp-fn{background:#aaa;color:#000}
-/* MS Word (grey) */
-#wp-inner.wp-word{background:#aaa;color:#000}
-#wp-inner.wp-word .wp-title{background:#000080;color:#fff}
-#wp-inner.wp-word .wp-menu{background:#bbb;color:#000}
-#wp-inner.wp-word .wp-ruler{background:#888;color:#000}
-#wp-inner.wp-word #wp-ta{background:#fff;color:#000;caret-color:#000}
-#wp-inner.wp-word .wp-status{background:#aaa;color:#000080}
-#wp-inner.wp-word .wp-bottom{background:#000080;color:#fff}
-#wp-inner.wp-word .wp-fns{background:#aaa}
-#wp-inner.wp-word .wp-fn{background:#888;color:#000;border:1px solid #555}
-
-/* ════════════════════════
-   DELUXE PAINT II
-════════════════════════ */
-#dp-root{background:#1a0030;color:#00ff41;outline:none;user-select:none}
-.dp-title{background:#2a0060;color:#ff55ff;padding:2px 8px;font-weight:bold;flex-shrink:0;font-size:12px}
-.dp-workspace{display:flex;flex:1;overflow:hidden}
-.dp-toolbar{width:46px;background:#220044;border-right:1px solid #605;display:flex;flex-direction:column;align-items:center;padding:4px 2px;gap:2px;overflow-y:auto;flex-shrink:0}
-.dp-sec{color:#aa55ff;font-size:9px;width:100%;text-align:center;margin:2px 0}
-.dp-btn{width:32px;height:20px;background:#330055;color:#00ff41;border:1px solid #605;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;flex-shrink:0}
-.dp-btn:hover,.dp-btn.sel{background:#6600aa;border-color:#ff55ff;color:#fff}
-.dp-swatch{width:16px;height:16px;cursor:pointer;border:1px solid #333;flex-shrink:0}
-.dp-swatch.sel{outline:2px solid #fff;outline-offset:1px}
-.dp-canvas-area{flex:1;overflow:auto;background:#00000f;display:flex;align-items:flex-start;justify-content:flex-start;padding:4px;cursor:crosshair}
-#dp-canvas{border:1px solid #400040;background:#00000f;line-height:0;font-size:0}
-.dp-row{display:flex;height:16px}
-.dp-cell{width:12px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;cursor:crosshair;flex-shrink:0;line-height:1}
-.dp-cell.cur-cell{outline:1px solid #ff55ff}
-.dp-statusbar{background:#220044;color:#aa55ff;padding:2px 8px;font-size:11px;flex-shrink:0}
-.dp-bottombar{background:#2a0060;color:#fff;padding:1px 8px;font-size:12px;flex-shrink:0}
-
-/* ════════════════════════
-   AUTODESK ANIMATOR
-════════════════════════ */
-#anim-root{background:#000;color:#fff;outline:none}
-.anim-title{background:#880000;color:#fff;padding:2px 8px;font-weight:bold;flex-shrink:0;text-align:center;font-size:13px}
-.anim-stage{flex:1;display:flex;align-items:center;justify-content:center;background:#0a0a0a;overflow:hidden}
-#anim-frame{color:#00ff41;text-shadow:0 0 8px #00ff41;font-size:13px;line-height:1.5;white-space:pre}
-.anim-label{background:#1a1a1a;color:#ffff00;padding:2px 8px;text-align:center;font-size:12px;flex-shrink:0}
-.anim-tl{background:#111;color:#00ff41;padding:2px 8px;font-size:12px;flex-shrink:0;white-space:pre;overflow:hidden}
-.anim-fns{display:flex;gap:12px;background:#000;color:#aaa;padding:2px 8px;font-size:11px;flex-shrink:0;border-top:1px solid #333}
-</style>
-</head>
+.bright{color:#aaffbb;text-shadow
 <body>
 <div id="crt">
   <div id="titlebar">
