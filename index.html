@@ -1,29 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Primary Meta Tags -->
-<title>AIC-6 Terminal — Async Research Institute</title>
-<meta name="title" content="AIC-6 Terminal — Async Research Institute">
-<meta name="description" content="AIC-6 Terminal is a retro‑styled CRT interface simulation built for Async Research Institute systems.">
+<title>AIC-6 Terminal — Retro DOS CRT Simulator</title>
+<meta name="title" content="AIC-6 Terminal — Retro DOS CRT Simulator">
+<meta name="description" content="Boot up AIC-6, an interactive retro DOS terminal in your browser. Log in, run classic commands, and launch built-in apps like Norton Commander and WordPerfect.">
+<meta name="keywords" content="retro terminal simulator, DOS simulator, CRT terminal, Norton Commander, WordPerfect simulator, browser terminal game, ARG terminal">
+<meta name="author" content="Async Research Institute">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://arc.acc.net/">
 
 <!-- Mobile & Browser -->
 <meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="AIC-6 Terminal">
+<meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://arc.acc.net/">
-<meta property="og:title" content="AIC-6 Terminal — Async Research Institute">
-<meta property="og:description" content="AIC-6 Terminal is a retro‑styled CRT interface simulation built for Async Research Institute systems.">
-<meta property="og:image" content="/og-image.png">
+<meta property="og:title" content="AIC-6 Terminal — Retro DOS CRT Simulator">
+<meta property="og:description" content="Boot up AIC-6, a fully interactive retro DOS terminal simulation. Log in, run classic commands, and launch built-in apps like Norton Commander, WordPerfect, and Deluxe Paint — right in your browser.">
+<meta property="og:image" content="https://arc.acc.net/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AIC-6 Terminal green-phosphor CRT boot screen">
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://arc.acc.net/">
-<meta property="twitter:title" content="AIC-6 Terminal — Async Research Institute">
-<meta property="twitter:description" content="AIC-6 Terminal is a retro‑styled CRT interface simulation built for Async Research Institute systems.">
-<meta property="twitter:image" content="/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://arc.acc.net/">
+<meta name="twitter:title" content="AIC-6 Terminal — Retro DOS CRT Simulator">
+<meta name="twitter:description" content="Boot up AIC-6, a fully interactive retro DOS terminal simulation. Log in, run classic commands, and launch built-in apps like Norton Commander, WordPerfect, and Deluxe Paint.">
+<meta name="twitter:image" content="https://arc.acc.net/og-image.png">
+<meta name="twitter:image:alt" content="AIC-6 Terminal green-phosphor CRT boot screen">
 
 <!-- Icons -->
 <link rel="icon" type="image/png" href="/favicon.png">
@@ -31,6 +44,25 @@
 
 <!-- Optional: PWA -->
 <link rel="manifest" href="/manifest.json">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AIC-6 Terminal",
+  "url": "https://arc.acc.net/",
+  "description": "A fully interactive retro DOS terminal simulation with a working virtual filesystem, command shell, and built-in retro apps including a file manager, word processors, a paint program, and an animation viewer.",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
 
 <style>
 /* ── Reset ── */
@@ -57,8 +89,129 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Co
 #cmd-input{flex:1;background:transparent;border:none;outline:none;color:#00ff41;font-size:14px;font-family:'Courier New',Courier,monospace;text-shadow:0 0 6px #00ff41;caret-color:#00ff41;padding:0 0 0 2px;line-height:1.5}
 
 /* ── Text Colour Classes ── */
-.bright{color:#aaffbb;text-shadow
+.bright{color:#aaffbb;text-shadow:0 0 8px #aaffbb,0 0 3px #ffffff}
+.dim{color:#0a802f;text-shadow:0 0 4px #0a802f}
+.err{color:#ff4136;text-shadow:0 0 6px #ff4136}
+.amb{color:#ffb000;text-shadow:0 0 6px #ffb000}
+.echo{color:#00ff41;text-shadow:0 0 4px #00ff41;opacity:.85}
+
+/* ════════════════════════════════════════════════════════════
+   APP OVERLAY (shared shell for all launched programs)
+   ════════════════════════════════════════════════════════════ */
+#app-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:50}
+#app-overlay.on{display:block}
+.app-screen{display:none;position:absolute;top:0;left:0;right:0;bottom:0;flex-direction:column;background:#000;color:#00ff41;font-family:'Courier New',Courier,monospace;font-size:13px;outline:none}
+.app-screen.on{display:flex}
+
+/* ════════════════════════════════════════════════════════════
+   NORTON COMMANDER
+   ════════════════════════════════════════════════════════════ */
+#nc-root{background:#0000aa;color:#aaaaaa}
+.nc-topbar{background:#aaaaaa;color:#000;text-align:center;padding:2px 0;font-weight:bold;flex-shrink:0}
+.nc-panels{flex:1;display:flex;overflow:hidden;border-top:1px solid #555;border-bottom:1px solid #555}
+.nc-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#0000aa;color:#aaaaaa}
+.nc-panel.nc-act{background:#0000cc}
+.nc-panel.nc-inact{opacity:.75}
+.nc-phdr{background:#aaaaaa;color:#000;padding:1px 6px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.nc-psubhdr{color:#ffff55;padding:1px 6px;flex-shrink:0;border-bottom:1px solid #5555ff}
+.nc-filelist{flex:1;overflow-y:auto;padding:2px 0}
+.nc-row{padding:1px 6px;white-space:pre;color:#ffffff}
+.nc-row.nc-sel{background:#00aaaa;color:#000000}
+.nc-msg{background:#000088;color:#ffff55;padding:2px 8px;flex-shrink:0;border-top:1px solid #5555ff}
+.nc-fnbar{display:flex;background:#aaaaaa;flex-shrink:0}
+.nc-fn{flex:1;text-align:center;color:#000;padding:2px 0;font-size:11px;border-right:1px solid #888}
+.nc-fnum{background:#000;color:#fff;padding:0 3px;margin-right:3px}
+
+/* ════════════════════════════════════════════════════════════
+   XTREE GOLD
+   ════════════════════════════════════════════════════════════ */
+#xt-root{background:#001100;color:#00ff41}
+.xt-title{text-align:center;padding:4px 0;font-weight:bold;color:#00ff41;border-bottom:1px solid #005511;flex-shrink:0}
+.xt-body{flex:1;display:flex;overflow:hidden}
+.xt-tree-pane{width:38%;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid #005511}
+.xt-files-pane{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.xt-phdr{color:#00aa2a;padding:4px 8px;flex-shrink:0}
+#xt-tree-list,#xt-file-list{flex:1;overflow-y:auto;padding:2px 8px}
+.xt-row{padding:1px 0;white-space:pre;color:#00ff41}
+.xt-row.xt-sel{background:#00ff41;color:#001100}
+.xt-stats{padding:3px 8px;color:#ffb000;border-top:1px solid #005511;flex-shrink:0}
+.xt-fnbar{display:flex;flex-wrap:wrap;gap:12px;background:#002200;padding:3px 8px;flex-shrink:0;font-size:11px;color:#0a802f}
+
+/* ════════════════════════════════════════════════════════════
+   WORD PROCESSORS (WordPerfect / WordStar / Word 5.5)
+   ════════════════════════════════════════════════════════════ */
+#wp-root{background:#000;padding:0}
+#wp-inner{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.wp-title{padding:3px 10px;font-weight:bold;flex-shrink:0}
+.wp-menu{padding:2px 10px;flex-shrink:0;font-size:12px}
+.wp-ruler{padding:0 10px;flex-shrink:0;letter-spacing:1px}
+.wp-status{padding:2px 10px;flex-shrink:0;font-size:12px}
+.wp-bottom{padding:2px 10px;flex-shrink:0;font-size:12px}
+.wp-fns{display:flex;flex-wrap:wrap;gap:10px;padding:3px 10px;flex-shrink:0;font-size:11px}
+#wp-ta{flex:1;width:100%;resize:none;border:none;outline:none;font-family:'Courier New',Courier,monospace;font-size:14px;padding:6px 10px;line-height:1.4}
+
+/* WordPerfect skin: blue screen, white text */
+#wp-inner.wp-wp{background:#0000aa}
+#wp-inner.wp-wp .wp-title,#wp-inner.wp-wp .wp-menu,#wp-inner.wp-wp .wp-ruler,
+#wp-inner.wp-wp .wp-status,#wp-inner.wp-wp .wp-bottom{color:#ffffff}
+#wp-inner.wp-wp .wp-fn{color:#fff;background:#000088;padding:1px 4px}
+#wp-inner.wp-wp #wp-ta{background:#0000aa;color:#ffffff;caret-color:#fff}
+#wp-inner.wp-wp .wp-status{background:#000088}
+
+/* WordStar skin: black screen, green/amber text */
+#wp-inner.wp-ws{background:#000}
+#wp-inner.wp-ws .wp-title,#wp-inner.wp-ws .wp-menu{color:#00ff41}
+#wp-inner.wp-ws .wp-ruler{color:#0a802f}
+#wp-inner.wp-ws .wp-status,#wp-inner.wp-ws .wp-bottom{color:#ffb000;background:#001a00}
+#wp-inner.wp-ws .wp-fn{color:#00ff41;background:#001a00;padding:1px 4px}
+#wp-inner.wp-ws #wp-ta{background:#000;color:#00ff41;caret-color:#00ff41}
+
+/* Microsoft Word 5.5 skin: dark grey/blue, white text, classic DOS Word look */
+#wp-inner.wp-word{background:#0a0a2a}
+#wp-inner.wp-word .wp-title,#wp-inner.wp-word .wp-menu{color:#fff;background:#000;padding:3px 10px}
+#wp-inner.wp-word .wp-ruler{color:#8888ff}
+#wp-inner.wp-word .wp-status,#wp-inner.wp-word .wp-bottom{color:#fff;background:#000088}
+#wp-inner.wp-word .wp-fn{color:#fff;background:#000088;padding:1px 4px}
+#wp-inner.wp-word #wp-ta{background:#0a0a2a;color:#ffffff;caret-color:#fff}
+
+/* ════════════════════════════════════════════════════════════
+   DELUXE PAINT II ENHANCED
+   ════════════════════════════════════════════════════════════ */
+#dp-root{background:#111;color:#00ff41}
+.dp-title{padding:4px 10px;font-size:12px;color:#00ff41;border-bottom:1px solid #333;flex-shrink:0}
+.dp-workspace{flex:1;display:flex;overflow:hidden}
+.dp-toolbar{width:130px;overflow-y:auto;padding:6px;border-right:1px solid #333;display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+.dp-sec{color:#0a802f;font-size:10px;margin-top:6px;letter-spacing:1px}
+.dp-btn{width:26px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #444;color:#00ff41;cursor:pointer;font-size:14px;margin-right:3px}
+.dp-btn.sel{background:#00ff41;color:#111;border-color:#00ff41}
+.dp-swatch{width:20px;height:16px;display:inline-block;border:1px solid #555;cursor:pointer;margin:1px}
+.dp-swatch.sel{border:2px solid #fff}
+.dp-canvas-area{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:10px}
+#dp-canvas{display:flex;flex-direction:column;background:#000;border:1px solid #333}
+.dp-row{display:flex;line-height:1}
+.dp-cell{display:inline-block;width:11px;height:16px;text-align:center;font-size:13px;cursor:crosshair;user-select:none}
+.dp-cell.cur-cell{outline:1px solid #fff}
+.dp-statusbar{padding:3px 10px;color:#ffb000;font-size:11px;border-top:1px solid #333;flex-shrink:0}
+.dp-bottombar{padding:3px 10px;color:#0a802f;font-size:11px;border-top:1px solid #333;flex-shrink:0}
+
+/* ════════════════════════════════════════════════════════════
+   AUTODESK ANIMATOR PRO
+   ════════════════════════════════════════════════════════════ */
+#anim-root{background:#000;color:#00ff41;align-items:center}
+.anim-title{padding:6px 10px;font-size:12px;color:#00ff41;width:100%;border-bottom:1px solid #333;flex-shrink:0;text-align:center}
+.anim-stage{flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto}
+.anim-stage pre{color:#00ff41;text-shadow:0 0 6px #00ff41;font-size:13px;line-height:1.3}
+.anim-label{padding:4px 10px;color:#ffb000;flex-shrink:0;text-align:center}
+.anim-tl{padding:4px 10px;color:#0a802f;flex-shrink:0;font-size:12px;text-align:center;white-space:pre}
+.anim-fns{display:flex;gap:16px;justify-content:center;padding:6px 10px;flex-shrink:0;font-size:11px;color:#0a802f;border-top:1px solid #333;width:100%}
+</style>
+</head>
 <body>
+<noscript>
+  <h1>AIC-6 Terminal — Retro DOS CRT Simulator</h1>
+  <p>AIC-6 Terminal is an interactive, browser-based recreation of a classic DOS terminal. Boot the system, log in, and use real DOS-style commands to explore a virtual filesystem. Launch built-in retro programs including a Norton Commander-style file manager, an XTree Gold-style tree browser, three word processors (WordPerfect, WordStar, and Microsoft Word 5.5 styles), a Deluxe Paint-style pixel editor, and an Autodesk Animator-style animation viewer.</p>
+  <p>This experience requires JavaScript to run. Please enable JavaScript in your browser to use AIC-6 Terminal.</p>
+</noscript>
 <div id="crt">
   <div id="titlebar">
     <span>AIC-6 TERMINAL &mdash; ASYNC RESEARCH INSTITUTE</span>
@@ -1379,3 +1532,4 @@ document.getElementById("anim-root").addEventListener("keydown",function(e){
 </script>
 </body>
 </html>
+
